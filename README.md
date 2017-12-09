@@ -1,6 +1,6 @@
 # wallet
 
-Demo wallet app using Laravel 5.5 and Vue with basic functionalities such as creating/deleting/searching wallet for Admin, credit/debit for User
+Demo wallet app using Laravel 5.5, Vue and MySQL with basic functionalities such as creating/deleting/searching wallet for Admin, credit/debit for User
 
 # Exceptions / Error Messages
 

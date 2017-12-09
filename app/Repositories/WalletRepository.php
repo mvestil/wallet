@@ -24,7 +24,15 @@ class WalletRepository
      */
     public function all()
     {
-        return Wallet::all();
+        $wallets = Wallet::latest()->get();
+
+        // Due to limitation of eager loading with limit clause, we lazy load recent transactions for each wallet
+        // https://github.com/laravel/framework/issues/4835
+        foreach ($wallets as $wallet) {
+            $wallet->transactions = $this->getRecentTransactions($wallet);
+        }
+
+        return $wallets;
     }
 
     /**
@@ -36,30 +44,30 @@ class WalletRepository
     public function findByEmail($email)
     {
         return Wallet::where('email', $email)
-            ->with([
-                'transactions' => function ($q) {
-                    $q->orderBy('id', 'desc')
-                        ->take(3);
-                }
-            ])->first();
+            ->withRecentTransactions()
+            ->first();
     }
 
     /**
      * Get transactions of a specific wallet
      *
-     * @param              $walletId
+     * @param integer|Wallet $wallet
      * @param integer|null $limit
      * @return mixed
      */
-    public function getTransactions($walletId, $limit = null)
+    public function getTransactions($wallet, $limit = null)
     {
-        $wallet = Wallet::findOrFail($walletId);
-
-        if ($limit) {
-            $wallet = $wallet->transactions()->recent($limit);
+        if (is_numeric($wallet)) {
+            $wallet = Wallet::findOrFail($wallet);
         }
 
-        return $wallet->get();
+        $transactions = $wallet->transactions();
+
+        if ($limit) {
+            return $transactions->recent($limit)->get();
+        }
+
+        return $transactions->get();
     }
 
     /**

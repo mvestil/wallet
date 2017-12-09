@@ -95,7 +95,7 @@ class WalletController extends Controller
     protected function validateStore($params)
     {
         $validator = Validator::make($params, [
-            'email' => 'required|unique:wallets',
+            'email' => 'required|email|unique:wallets',
         ]);
 
         if ($validator->fails()) {

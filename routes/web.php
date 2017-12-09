@@ -14,3 +14,13 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+// Quick demo admin page
+Route::get('/admin', function () {
+    return view('admin/admin-wallet');
+});
+
+// Quick demo user page
+Route::get('/user/{email}', function ($email) {
+    return view('user/user-wallet', compact('email'));
+});

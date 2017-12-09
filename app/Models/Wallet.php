@@ -35,4 +35,21 @@ class Wallet extends Model
     {
         return $this->hasMany('App\Models\Transaction');
     }
+
+    /**
+     * Scope to fetch recent transactions
+     *
+     * @param     $query
+     * @param int $limit
+     * @return mixed
+     */
+    public function scopeWithRecentTransactions($query, $limit = 3)
+    {
+        return $query->with([
+            'transactions' => function ($q) use ($limit) {
+                $q->orderBy('id', 'desc')
+                    ->take($limit);
+            }
+        ]);
+    }
 }

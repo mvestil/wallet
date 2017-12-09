@@ -53,8 +53,6 @@ class Handler extends ExceptionHandler
             return response()->json(['error' => 'Invalid endpoint'], 500);
         }
 
-        \Log::info('a', [$request, $exception]);
-
         return parent::render($request, $exception);
     }
 }

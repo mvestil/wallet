@@ -72,7 +72,7 @@
 
         methods: {
             getWallet() {
-                axios.get('/api/wallets/' +  this.email)
+                axios.get('/api/v1/wallets/' +  this.email)
                     .then((res) => {
                         this.walletInfo = res.data.data;
                     })
@@ -82,7 +82,7 @@
             },
 
             debitWallet() {
-                axios.delete('/api/wallets/' + this.email + '/transact', { 'data' : this.debit})
+                axios.delete('/api/v1/wallets/' + this.email + '/transact', { 'data' : this.debit})
                     .then((res) => {
                         this.debit.amount = '';
                         this.debit.remarks = '';
@@ -92,7 +92,7 @@
             },
 
             creditWallet() {
-                axios.put('/api/wallets/' + this.email + '/transact', this.credit)
+                axios.put('/api/v1/wallets/' + this.email + '/transact', this.credit)
                     .then((res) => {
                         this.credit.amount = '';
                         this.credit.remarks = '';

@@ -29,12 +29,16 @@ Route::middleware('admin.auth')->group(function () {
 });
 
 // Assuming there is no authentication needed for these public APIs as per Acceptance Criteria
-Route::namespace('User')->group(function () {
-    Route::prefix('wallets/{email}')->group(function () {
-        Route::get('/', ['as' => 'api.wallet.show', 'uses' => 'WalletController@show']);
-        Route::put('/transact', ['as' => 'api.wallet.credit', 'uses' => 'WalletController@credit']);
-        Route::delete('/transact', ['as' => 'api.wallet.debit', 'uses' => 'WalletController@debit']);
+Route::prefix('v1')->group(function() {
+    Route::namespace('Api\V1\User')->group(function () {
+        Route::prefix('wallets/{email}')->group(function () {
+            Route::get('/', ['as' => 'api.wallet.show', 'uses' => 'WalletController@show']);
+            Route::put('/transact', ['as' => 'api.wallet.credit', 'uses' => 'WalletController@credit']);
+            Route::delete('/transact', ['as' => 'api.wallet.debit', 'uses' => 'WalletController@debit']);
+        });
     });
 });
+
+
 
 

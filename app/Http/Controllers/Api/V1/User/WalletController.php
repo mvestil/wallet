@@ -3,7 +3,7 @@
  * Class WalletController
  */
 
-namespace App\Http\Controllers\User;
+namespace App\Http\Controllers\Api\V1\User;
 
 use App\Exceptions\Wallet\WalletNotFoundException;
 use App\Exceptions\Wallet\WalletValidationException;

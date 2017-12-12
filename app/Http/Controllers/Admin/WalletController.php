@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exceptions\Wallet\WalletNotFoundException;
 use App\Exceptions\Wallet\WalletValidationException;
+use App\Http\Controllers\ApiController;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Validator;
  *
  * Handles Wallet admin related actions. Injects WalletService to handle the business logic.
  */
-class WalletController extends Controller
+class WalletController extends ApiController
 {
     /**
      * @var WalletService
@@ -44,14 +45,11 @@ class WalletController extends Controller
         try {
             $wallets = $this->wallet->all();
 
-            return response()->json([
+            return $this->respond([
                 'data' => $wallets
             ]);
         } catch (\Exception $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->respondInternalError();
         }
     }
 
@@ -70,19 +68,13 @@ class WalletController extends Controller
 
             $wallet = $this->wallet->create($params);
 
-            return response()->json([
+            return $this->respond([
                 'data' => $wallet
             ]);
         } catch (WalletValidationException $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->respondBadRequest($e->getMessage());
         } catch (\Exception $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->respondInternalError();
         }
     }
 
@@ -115,19 +107,13 @@ class WalletController extends Controller
         try {
             $wallet = $this->wallet->findByEmail($email);
 
-            return response()->json([
+            return $this->respond([
                 'data' => $wallet
             ]);
         } catch (WalletNotFoundException $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 404);
+            return $this->respondNotFound($e->getMessage());
         } catch (\Exception $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->respondInternalError();
         }
     }
 
@@ -142,10 +128,7 @@ class WalletController extends Controller
         try {
             $this->wallet->delete($email);
         } catch (\Exception $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->respondInternalError();
         }
     }
 }

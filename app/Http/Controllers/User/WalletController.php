@@ -7,6 +7,7 @@ namespace App\Http\Controllers\User;
 
 use App\Exceptions\Wallet\WalletNotFoundException;
 use App\Exceptions\Wallet\WalletValidationException;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\Controller;
 use App\Services\WalletService;
 use Illuminate\Http\Request;
@@ -17,7 +18,7 @@ use Illuminate\Support\Facades\Validator;
  *
  * Handles Wallet user related actions. Injects WalletService to handle the business logic.
  */
-class WalletController extends Controller
+class WalletController extends ApiController
 {
     /**
      * @var WalletService
@@ -45,19 +46,13 @@ class WalletController extends Controller
         try {
             $wallet = $this->wallet->findByEmail($email);
 
-            return response()->json([
+            return $this->respond([
                 'data' => $wallet
             ]);
         } catch (WalletNotFoundException $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 404);
+            return $this->respondNotFound($e->getMessage());
         } catch (\Exception $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->respondInternalError();
         }
     }
 
@@ -77,15 +72,9 @@ class WalletController extends Controller
 
             $this->wallet->credit($email, $params);
         } catch (WalletValidationException $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->respondBadRequest($e->getMessage());
         } catch (\Exception $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->respondInternalError();
         }
     }
 
@@ -105,15 +94,9 @@ class WalletController extends Controller
 
             $this->wallet->debit($email, $params);
         } catch (WalletValidationException $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 400);
+            return $this->respondBadRequest($e->getMessage());
         } catch (\Exception $e) {
-            return response()->json([
-                'code'    => $e->getCode(),
-                'message' => $e->getMessage()
-            ], 500);
+            return $this->respondInternalError();
         }
     }
 
